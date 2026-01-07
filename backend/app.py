@@ -2048,6 +2048,11 @@ def create_aoi_table():
             for col in string_columns:
                 if col in aoi_df.columns:
                     aoi_df[col] = aoi_df[col].astype(str).replace('nan', '')
+            # Integer columns
+            if 'tahun' in aoi_df.columns:
+                aoi_df['tahun'] = pd.to_numeric(aoi_df['tahun'], errors='coerce').astype('Int64')
+            if 'id' in aoi_df.columns:
+                aoi_df['id'] = pd.to_numeric(aoi_df['id'], errors='coerce').astype('Int64')
         else:
             aoi_df = pd.DataFrame()
 
@@ -2055,11 +2060,16 @@ def create_aoi_table():
         new_aoi_df = pd.DataFrame([aoi_table_data])
         updated_df = pd.concat([aoi_df, new_aoi_df], ignore_index=True)
 
-        # Ensure all string columns have proper dtype
+        # Ensure all columns have proper dtype
         string_columns = ['nama', 'targetType', 'targetDirektorat', 'targetSubdirektorat', 'targetDivisi', 'status']
         for col in string_columns:
             if col in updated_df.columns:
                 updated_df[col] = updated_df[col].astype(str).replace('nan', '')
+        # Integer columns
+        if 'tahun' in updated_df.columns:
+            updated_df['tahun'] = pd.to_numeric(updated_df['tahun'], errors='coerce').astype('Int64')
+        if 'id' in updated_df.columns:
+            updated_df['id'] = pd.to_numeric(updated_df['id'], errors='coerce').astype('Int64')
         
         # Save to storage
         success = storage_service.write_csv(updated_df, 'config/aoi-tables.csv')
@@ -2084,20 +2094,29 @@ def update_aoi_table(table_id):
         if aoi_data is None:
             return jsonify({'error': 'No AOI tables found'}), 404
 
-        # Ensure proper data types for string columns
+        # Ensure proper data types for all columns
+        # String columns
         string_columns = ['nama', 'targetType', 'targetDirektorat', 'targetSubdirektorat', 'targetDivisi', 'status']
         for col in string_columns:
             if col in aoi_data.columns:
                 aoi_data[col] = aoi_data[col].astype(str).replace('nan', '')
+
+        # Integer columns (tahun, id)
+        if 'tahun' in aoi_data.columns:
+            aoi_data['tahun'] = pd.to_numeric(aoi_data['tahun'], errors='coerce').astype('Int64')
+        if 'id' in aoi_data.columns:
+            aoi_data['id'] = pd.to_numeric(aoi_data['id'], errors='coerce').astype('Int64')
 
         # Find the row to update
         mask = aoi_data['id'] == table_id
         if not mask.any():
             return jsonify({'error': 'AOI table not found'}), 404
 
-        # Update the AOI table using proper assignment
+        # Update the AOI table - preserve existing tahun if not provided
+        existing_tahun = aoi_data.loc[mask, 'tahun'].iloc[0] if mask.any() else None
+
         aoi_data.loc[mask, 'nama'] = str(data.get('nama', ''))
-        aoi_data.loc[mask, 'tahun'] = int(data.get('tahun')) if data.get('tahun') else None
+        aoi_data.loc[mask, 'tahun'] = int(data.get('tahun')) if data.get('tahun') else existing_tahun
         aoi_data.loc[mask, 'targetType'] = str(data.get('targetType', ''))
         aoi_data.loc[mask, 'targetDirektorat'] = str(data.get('targetDirektorat', ''))
         aoi_data.loc[mask, 'targetSubdirektorat'] = str(data.get('targetSubdirektorat', ''))
