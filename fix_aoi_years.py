@@ -2,8 +2,12 @@
 """
 Quick fix script to repair AOI tables with missing years
 """
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
+
 import pandas as pd
-from backend.storage_service import storage_service
+from storage_service import storage_service
 
 print("=== Fixing AOI Tables with Missing Years ===\n")
 
