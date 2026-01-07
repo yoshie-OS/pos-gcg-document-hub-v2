@@ -2043,12 +2043,23 @@ def create_aoi_table():
         existing_data = storage_service.read_csv('config/aoi-tables.csv')
         if existing_data is not None:
             aoi_df = existing_data
+            # Ensure proper data types for string columns
+            string_columns = ['nama', 'targetType', 'targetDirektorat', 'targetSubdirektorat', 'targetDivisi', 'status']
+            for col in string_columns:
+                if col in aoi_df.columns:
+                    aoi_df[col] = aoi_df[col].astype(str).replace('nan', '')
         else:
             aoi_df = pd.DataFrame()
-        
+
         # Add new AOI table
         new_aoi_df = pd.DataFrame([aoi_table_data])
         updated_df = pd.concat([aoi_df, new_aoi_df], ignore_index=True)
+
+        # Ensure all string columns have proper dtype
+        string_columns = ['nama', 'targetType', 'targetDirektorat', 'targetSubdirektorat', 'targetDivisi', 'status']
+        for col in string_columns:
+            if col in updated_df.columns:
+                updated_df[col] = updated_df[col].astype(str).replace('nan', '')
         
         # Save to storage
         success = storage_service.write_csv(updated_df, 'config/aoi-tables.csv')
@@ -2072,15 +2083,26 @@ def update_aoi_table(table_id):
         aoi_data = storage_service.read_csv('config/aoi-tables.csv')
         if aoi_data is None:
             return jsonify({'error': 'No AOI tables found'}), 404
-        
-        # Update the AOI table
-        aoi_data.loc[aoi_data['id'] == table_id, 'nama'] = data.get('nama', '')
-        aoi_data.loc[aoi_data['id'] == table_id, 'tahun'] = data.get('tahun')
-        aoi_data.loc[aoi_data['id'] == table_id, 'targetType'] = data.get('targetType', '')
-        aoi_data.loc[aoi_data['id'] == table_id, 'targetDirektorat'] = data.get('targetDirektorat', '')
-        aoi_data.loc[aoi_data['id'] == table_id, 'targetSubdirektorat'] = data.get('targetSubdirektorat', '')
-        aoi_data.loc[aoi_data['id'] == table_id, 'targetDivisi'] = data.get('targetDivisi', '')
-        aoi_data.loc[aoi_data['id'] == table_id, 'status'] = data.get('status', 'active')
+
+        # Ensure proper data types for string columns
+        string_columns = ['nama', 'targetType', 'targetDirektorat', 'targetSubdirektorat', 'targetDivisi', 'status']
+        for col in string_columns:
+            if col in aoi_data.columns:
+                aoi_data[col] = aoi_data[col].astype(str).replace('nan', '')
+
+        # Find the row to update
+        mask = aoi_data['id'] == table_id
+        if not mask.any():
+            return jsonify({'error': 'AOI table not found'}), 404
+
+        # Update the AOI table using proper assignment
+        aoi_data.loc[mask, 'nama'] = str(data.get('nama', ''))
+        aoi_data.loc[mask, 'tahun'] = int(data.get('tahun')) if data.get('tahun') else None
+        aoi_data.loc[mask, 'targetType'] = str(data.get('targetType', ''))
+        aoi_data.loc[mask, 'targetDirektorat'] = str(data.get('targetDirektorat', ''))
+        aoi_data.loc[mask, 'targetSubdirektorat'] = str(data.get('targetSubdirektorat', ''))
+        aoi_data.loc[mask, 'targetDivisi'] = str(data.get('targetDivisi', ''))
+        aoi_data.loc[mask, 'status'] = str(data.get('status', 'active'))
         
         # Save to storage
         success = storage_service.write_csv(aoi_data, 'config/aoi-tables.csv')
