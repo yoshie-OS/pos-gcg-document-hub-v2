@@ -1,2 +1,4 @@
 "id","aoiTableId","jenis","no","isi","tingkatUrgensi","aspekAOI","pihakTerkait","organPerusahaan","createdAt","status"
 551721201,539359818,"Rekomendasi",1,"Test recommendation content","Tinggi","","","","2025-09-18T23:48:52.998355","active"
+1036031840,832354530,"REKOMENDASI",1,"daftar 1","RENDAH","aspek 1","pihak 1","organ 1","2026-01-07T00:54:57.203Z","active"
+1038040008,832354530,"SARAN",2,"saran 1","KRITIS","aspek 2","pihak 2","organ 2","2026-01-07T00:54:59.218Z","active"

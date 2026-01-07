@@ -42,7 +42,12 @@
       "Bash(FLASK_PORT=5001 python app.py:*)",
       "Bash(npm install:*)",
       "Bash(if exist \"node_modules\\\\.vite\" rmdir /S /Q \"node_modules\\\\.vite\")",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(gh repo create:*)",
+      "Bash(chmod:*)",
+      "Bash(pkill:*)",
+      "Bash(lsof:*)",
+      "Bash(./start.sh:*)"
     ],
     "deny": [],
     "ask": []

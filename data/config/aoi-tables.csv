@@ -1,2 +1,6 @@
 "id","nama","tahun","targetType","targetDirektorat","targetSubdirektorat","targetDivisi","createdAt","status"
-539359818,"Test AOI Table",2024,"divisi","","","Test Division","2025-09-18T23:48:40.635428","active"
+539359818,"Test AOI Table",2024.0,"divisi","","","Test Division","2025-09-18T23:48:40.635428","active"
+69517178,"",2024.0,"divisi","Direktorat Bisnis Jasa Keuangan","Sub Direktorat Consumer Business","Divisi Digital Giro and Payment Solution","2026-01-07T00:38:50.692Z","active"
+291472447,"",2024.0,"divisi","Direktorat Bisnis Jasa Keuangan","Sub Direktorat Consumer Business","Divisi Digital Giro and Payment Solution","2026-01-07T00:42:32.646Z","active"
+588892606,"",2024.0,"divisi","Direktorat Bisnis Jasa Keuangan","Sub Direktorat Consumer Business","Divisi Digital Giro and Payment Solution","2026-01-07T00:47:30.066Z","active"
+832354530,"",2055.0,"divisi","Direktorat Bisnis Jasa Keuangan","Sub Direktorat Consumer Business","Divisi Digital Giro and Payment Solution","2026-01-07T00:51:33.525Z","active"
