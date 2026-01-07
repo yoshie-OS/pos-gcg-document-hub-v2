@@ -120,10 +120,23 @@ const AOIManagement = () => {
 
   // Filter tables berdasarkan tahun dan struktur organisasi user
   const yearTables = selectedYear ? aoiTables.filter(table => {
-    if (table.tahun !== selectedYear) return false;
+    console.log(`[AOI Filter] Checking table ID ${table.id}, year ${table.tahun} vs selected ${selectedYear}`);
+    console.log(`[AOI Filter] Table targets:`, {
+      direktorat: table.targetDirektorat,
+      subdirektorat: table.targetSubdirektorat,
+      divisi: table.targetDivisi
+    });
+
+    if (table.tahun !== selectedYear) {
+      console.log(`[AOI Filter] ❌ Year mismatch, skipping`);
+      return false;
+    }
 
     // Super admin can see all
-    if (currentUser?.role === 'superadmin' || currentUser?.role === 'super-admin') return true;
+    if (currentUser?.role === 'superadmin' || currentUser?.role === 'super-admin') {
+      console.log(`[AOI Filter] ✅ Super admin - showing all`);
+      return true;
+    }
 
     // Regular user - filter by structure
     if (!currentUser?.subdirektorat) return false;
