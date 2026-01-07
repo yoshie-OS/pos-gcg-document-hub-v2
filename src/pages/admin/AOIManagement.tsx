@@ -143,15 +143,32 @@ const AOIManagement = () => {
 
     // Match by direktorat
     if (table.targetDirektorat && table.targetDirektorat.trim()) {
+      // Find user's subdirektorat data
       const userSubdirektoratData = subdirektorat.find(
         sub => sub.nama === userSubdirektorat && sub.tahun === selectedYear
       );
-      if (userSubdirektoratData) {
-        const direktoratData = direktorat.find(
-          dir => dir.id === userSubdirektoratData.direktoratId && dir.tahun === selectedYear
-        );
-        return direktoratData?.nama === table.targetDirektorat;
+
+      if (!userSubdirektoratData) {
+        // If subdirektorat data not found, user can't see direktorat-level tables
+        console.warn(`Subdirektorat "${userSubdirektorat}" not found for year ${selectedYear}`);
+        return false;
       }
+
+      // Find the direktorat this subdirektorat belongs to
+      const userDirektoratData = direktorat.find(
+        dir => dir.id === userSubdirektoratData.direktoratId && dir.tahun === selectedYear
+      );
+
+      if (!userDirektoratData) {
+        // If direktorat data not found, user can't see direktorat-level tables
+        console.warn(`Direktorat with ID ${userSubdirektoratData.direktoratId} not found for year ${selectedYear}`);
+        return false;
+      }
+
+      // Match the direktorat name
+      const matches = userDirektoratData.nama === table.targetDirektorat;
+      console.log(`Direktorat match: User="${userDirektoratData.nama}" vs Table="${table.targetDirektorat}" = ${matches}`);
+      return matches;
     }
 
     // If no organization assigned, show to all users
